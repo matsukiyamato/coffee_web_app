@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html class="light" lang="ja">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Arabica Analytics | Dynamic Report</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                "primary": "#4f3a25",
+                "secondary": "#4a6457",
+                "surface": "#fbfbe2",
+                "on-surface": "#1b1d0e",
+                "surface-container-low": "#f5f5dc",
+              },
+              "fontFamily": {
+                "headline": ["Noto Serif"],
+                "body": ["Manrope"]
+              }
+            },
+          },
+        }
+    </script>
+    <style>
+        .line-path { fill: none; stroke: #4f3a25; stroke-width: 3; stroke-linecap: round; transition: d 0.5s ease; }
+        .bar-rect { fill: #cae6d6; opacity: 0.7; transition: height 0.5s ease, y 0.5s ease; }
+        .marker { fill: #4f3a25; stroke: #fbfbe2; stroke-width: 2; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+    <header class="fixed top-0 left-0 right-0 z-50 bg-[#fbfbe2] flex justify-between items-center w-full px-8 py-4 border-b border-[#4f3a25]/10">
+        <div class="text-2xl font-serif italic text-[#4f3a25]">Arabica Analytics</div>
+        <div class="flex items-center gap-4">
+            <span class="material-symbols-outlined text-primary">account_circle</span>
+        </div>
+    </header>
+
+    <div class="flex pt-16 min-h-screen">
+        <aside class="fixed left-0 top-0 flex flex-col bg-[#f5f5dc] h-screen w-72 pt-20">
+            <nav class="flex-1 px-4">
+                <div class="px-4 mb-4 text-[10px] font-bold text-secondary uppercase tracking-widest">Analytics</div>
+                <a class="bg-primary text-white rounded-lg px-6 py-3 flex items-center gap-3 mb-2" href="#">
+                    <span class="material-symbols-outlined">insights</span>
+                    <span class="text-sm">統合予測</span>
+                </a>
+            </nav>
+        </aside>
+
+        <main class="ml-72 flex-1 p-8">
+            <section class="mb-8">
+                <h1 class="text-4xl font-headline font-bold italic">市場予測：アラビカ・プレミアム</h1>
+                <p class="text-sm text-secondary mt-1">生産量（ヒストグラム）と降水量（折れ線）の相関分析</p>
+            </section>
+
+            <div class="bg-surface-container-low rounded-2xl p-8 shadow-sm">
+                <div class="flex justify-between mb-8">
+                    <h2 class="text-xl font-headline font-bold">2024年 下半期推移</h2>
+                    <div class="flex gap-4 text-[10px] font-bold uppercase">
+                        <div class="flex items-center gap-2"><span class="w-3 h-3 bg-[#cae6d6]"></span>生産量</div>
+                        <div class="flex items-center gap-2"><span class="w-3 h-3 bg-primary"></span>降水量</div>
+                    </div>
+                </div>
+
+                <div class="relative h-[300px] w-full">
+                    <svg id="dynamic-chart" class="w-full h-full" viewBox="0 0 800 300" preserveAspectRatio="none">
+                        <line x1="0" y1="50" x2="800" y2="50" stroke="rgba(0,0,0,0.05)" />
+                        <line x1="0" y1="150" x2="800" y2="150" stroke="rgba(0,0,0,0.05)" />
+                        <line x1="0" y1="250" x2="800" y2="250" stroke="rgba(0,0,0,0.05)" />
+                        
+                        <g id="bars-group"></g>
+                        <path id="line-path" class="line-path" d="" />
+                        <g id="markers-group"></g>
+                    </svg>
+
+                    <div id="x-axis" class="flex justify-between mt-4 px-10 text-[10px] font-bold text-secondary"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // 実データ（app.pyから注入される想定。ここではBrazil.csv/Productionの解析値を初期値としてセット）
+        const chartData = [
+            { label: "06月", precip: 6.0, prod: 3299.8 },
+            { label: "07月", precip: 36.9, prod: 3299.8 },
+            { label: "08月", precip: 58.2, prod: 3299.8 },
+            { label: "09月", precip: 14.3, prod: 3299.8 },
+            { label: "10月", precip: 91.3, prod: 3299.8 },
+            { label: "11月", precip: 199.2, prod: 3299.8 }
+        ];
+
+        function renderChart(data) {
+            const barsGroup = document.getElementById('bars-group');
+            const markersGroup = document.getElementById('markers-group');
+            const linePath = document.getElementById('line-path');
+            const xAxis = document.getElementById('x-axis');
+
+            const width = 800;
+            const height = 300;
+            const padding = 60;
+            const step = (width - padding * 2) / (data.length - 1);
+
+            let pathD = "";
+            
+            data.forEach((d, i) => {
+                const x = padding + (i * step);
+                // スケーリング: 降水量(max 200) -> グラフ高さ(250)
+                const yLine = height - (d.precip * 1.2) - 30;
+                // スケーリング: 生産量 -> 棒の高さ
+                const barHeight = 150; 
+                const yBar = height - barHeight;
+
+                // 1. 棒グラフ (Histogram)
+                const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                rect.setAttribute("class", "bar-rect");
+                rect.setAttribute("x", x - 30);
+                rect.setAttribute("y", yBar);
+                rect.setAttribute("width", 60);
+                rect.setAttribute("height", barHeight);
+                rect.setAttribute("rx", "4");
+                barsGroup.appendChild(rect);
+
+                // 2. 折れ線グラフ (Line Path)
+                pathD += (i === 0 ? "M" : " L") + ` ${x},${yLine}`;
+
+                // 3. マーカー
+                const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                circle.setAttribute("class", "marker");
+                circle.setAttribute("cx", x);
+                circle.setAttribute("cy", yLine);
+                circle.setAttribute("r", "5");
+                markersGroup.appendChild(circle);
+
+                // 4. X軸ラベル
+                const span = document.createElement("span");
+                span.innerText = d.label;
+                xAxis.appendChild(span);
+            });
+
+            linePath.setAttribute("d", pathD);
+        }
+
+        // 実行
+        document.addEventListener('DOMContentLoaded', () => renderChart(chartData));
+    </script>
+</body>
+</html>
