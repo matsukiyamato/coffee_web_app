@@ -1,0 +1,364 @@
+<html class="light" lang="ja"><head></head><body class="bg-background text-on-background selection:bg-primary-container selection:text-on-primary-container">```html
+
+
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Arabica Analytics | 結果とインサイト</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-error": "#ffffff",
+                      "error": "#ba1a1a",
+                      "surface-container-highest": "#e4e4cc",
+                      "error-container": "#ffdad6",
+                      "tertiary": "#523a00",
+                      "on-primary-fixed-variant": "#59422c",
+                      "surface-bright": "#fbfbe2",
+                      "surface-container": "#efefd7",
+                      "on-secondary-fixed": "#062016",
+                      "secondary-fixed": "#cce9d9",
+                      "inverse-primary": "#e1c1a4",
+                      "primary": "#4f3a25",
+                      "on-secondary": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "on-tertiary": "#ffffff",
+                      "surface-container-lowest": "#ffffff",
+                      "on-tertiary-container": "#ecc479",
+                      "secondary": "#4a6457",
+                      "on-surface-variant": "#50453e",
+                      "on-surface": "#1b1d0e",
+                      "on-secondary-container": "#4e685b",
+                      "secondary-fixed-dim": "#b1cdbd",
+                      "surface-dim": "#dbdcc3",
+                      "primary-container": "#68513a",
+                      "surface-container-low": "#f5f5dc",
+                      "on-primary-container": "#e5c5a8",
+                      "secondary-container": "#cae6d6",
+                      "tertiary-fixed-dim": "#e9c176",
+                      "surface": "#fbfbe2",
+                      "surface-container-high": "#eaead1",
+                      "outline": "#82746d",
+                      "primary-fixed-dim": "#e1c1a4",
+                      "on-secondary-fixed-variant": "#334c40",
+                      "background": "#fbfbe2",
+                      "tertiary-container": "#6d5010",
+                      "primary-fixed": "#fedcbe",
+                      "tertiary-fixed": "#ffdea5",
+                      "surface-tint": "#725a42",
+                      "inverse-surface": "#303221",
+                      "surface-variant": "#e4e4cc",
+                      "on-tertiary-fixed": "#261900",
+                      "on-tertiary-fixed-variant": "#5d4201",
+                      "outline-variant": "#d4c3ba",
+                      "inverse-on-surface": "#f2f2d9",
+                      "on-error-container": "#93000a",
+                      "on-primary-fixed": "#291806",
+                      "on-background": "#1b1d0e"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "2xl": "1.5rem",
+                      "full": "9999px"
+              },
+              "fontFamily": {
+                      "headline": ["Noto Serif"],
+                      "body": ["Manrope"],
+                      "label": ["Manrope"]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        body { font-family: 'Manrope', 'Noto Sans JP', sans-serif; }
+        h1, h2, h3, .font-serif { font-family: 'Noto Serif', 'Noto Serif JP', serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        
+        .chart-grid-line { stroke: rgba(80, 69, 62, 0.1); stroke-width: 1; }
+        .line-path { fill: none; stroke: #4f3a25; stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
+        .bar-rect { fill: #cae6d6; opacity: 0.7; }
+        .marker { fill: #4f3a25; stroke: #fbfbe2; stroke-width: 2; }
+    </style>
+<!-- TopNavBar -->
+<header class="fixed top-0 left-0 right-0 z-50 bg-[#fbfbe2] dark:bg-[#1b1d0e] flex justify-between items-center w-full px-8 py-4 max-w-[1920px] mx-auto">
+<div class="text-2xl font-serif italic text-[#4f3a25] dark:text-[#f5f5dc] tracking-tighter">Arabica Analytics</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-[#68513a] dark:text-[#a0a08b] font-medium Manrope uppercase tracking-wider text-xs hover:text-[#4f3a25] transition-colors duration-300" href="#">市場概況</a>
+<a class="text-[#4f3a25] dark:text-[#f5f5dc] border-b-2 border-[#4f3a25] dark:border-[#f5f5dc] pb-1 font-bold Manrope uppercase tracking-wider text-xs" href="#">予測</a>
+<a class="text-[#68513a] dark:text-[#a0a08b] font-medium Manrope uppercase tracking-wider text-xs hover:text-[#4f3a25] transition-colors duration-300" href="#">インサイト</a>
+</nav>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary cursor-pointer">account_circle</span>
+</div>
+</header>
+<div class="flex pt-16 min-h-screen">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 flex flex-col border-r-0 z-40 bg-[#f5f5dc] dark:bg-[#1b1d0e] h-screen w-72 pt-20">
+<div class="px-8 mb-8">
+<h3 class="text-lg font-serif text-[#4f3a25] dark:text-[#f5f5dc]">選択メニュー</h3>
+<p class="text-xs font-medium text-on-surface-variant/70 uppercase tracking-widest mt-1">コモディティ表示の管理</p>
+</div>
+<nav class="flex-1">
+<a class="bg-[#4f3a25] text-[#fbfbe2] dark:bg-[#4a6457] dark:text-[#fbfbe2] rounded-r-full mr-4 px-6 py-3 my-1 flex items-center gap-3 transition-transform duration-200 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">public</span>
+<span class="text-sm font-medium">世界の原産地</span>
+</a>
+<a class="text-[#68513a] dark:text-[#a0a08b] hover:bg-[#e4e4cc] dark:hover:bg-[#2c2f1a] rounded-r-full mr-4 px-6 py-3 my-1 flex items-center gap-3 transition-transform duration-200 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">coffee</span>
+<span class="text-sm font-medium">豆の品種</span>
+</a>
+<a class="text-[#68513a] dark:text-[#a0a08b] hover:bg-[#e4e4cc] dark:hover:bg-[#2c2f1a] rounded-r-full mr-4 px-6 py-3 my-1 flex items-center gap-3 transition-transform duration-200 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">show_chart</span>
+<span class="text-sm font-medium">履歴データ</span>
+</a>
+<a class="text-[#68513a] dark:text-[#a0a08b] hover:bg-[#e4e4cc] dark:hover:bg-[#2c2f1a] rounded-r-full mr-4 px-6 py-3 my-1 flex items-center gap-3 transition-transform duration-200 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">water_drop</span>
+<span class="text-sm font-medium">降水量との相関</span>
+</a>
+<a class="text-[#68513a] dark:text-[#a0a08b] hover:bg-[#e4e4cc] dark:hover:bg-[#2c2f1a] rounded-r-full mr-4 px-6 py-3 my-1 flex items-center gap-3 transition-transform duration-200 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="text-sm font-medium">輸出レポート</span>
+</a>
+</nav>
+<div class="p-8">
+<button class="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary py-3 px-6 rounded-xl text-xs font-bold uppercase tracking-widest shadow-lg hover:opacity-90 transition-all">
+                    予測を生成
+                </button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-72 flex-1 p-8 bg-surface">
+<!-- Header Section -->
+<section class="mb-12">
+<div class="flex justify-between items-end">
+<div>
+<span class="text-xs font-bold font-label uppercase tracking-widest text-secondary">分析インテリジェンス</span>
+<h1 class="text-5xl font-headline font-bold text-on-surface mt-2 italic tracking-tight">市場予測：アラビカ・プレミアム</h1>
+</div>
+<div class="text-right">
+<div class="text-3xl font-headline font-bold text-primary">$4.82<span class="text-lg font-normal text-on-surface-variant ml-1">/lb</span></div>
+<div class="flex items-center gap-1 text-secondary font-bold text-sm">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span>収穫量予測 +12.4%</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Filter Section: Updated to match SCREEN_10 style -->
+<section class="mb-8 flex gap-6">
+<div class="flex flex-col gap-2 min-w-[280px]">
+<label class="text-[10px] font-bold font-label uppercase tracking-widest text-secondary" for="origin-select">産地 (Origin)</label>
+<div class="relative group">
+<select class="w-full appearance-none bg-surface-container-highest border-none text-on-surface font-headline italic py-3 px-6 rounded-xl focus:ring-2 focus:ring-primary/20 outline-none cursor-pointer transition-all hover:bg-surface-container-high" id="origin-select">
+<option value="brazil">ブラジル (Brazil)</option>
+<option value="colombia">コロンビア (Colombia)</option>
+<option selected="" value="ethiopia">エチオピア (Ethiopia)</option>
+<option value="vietnam">ベトナム (Vietnam)</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-primary/40 group-hover:text-primary transition-colors">expand_more</span>
+</div>
+</div>
+<div class="flex flex-col gap-2 min-w-[280px]">
+<label class="text-[10px] font-bold font-label uppercase tracking-widest text-secondary" for="variety-select">豆の種類 (Bean Variety)</label>
+<div class="relative group">
+<select class="w-full appearance-none bg-surface-container-highest border-none text-on-surface font-headline italic py-3 px-6 rounded-xl focus:ring-2 focus:ring-primary/20 outline-none cursor-pointer transition-all hover:bg-surface-container-high" id="variety-select">
+<option selected="" value="arabica">アラビカ (Arabica)</option>
+<option value="robusta">ロブスタ (Robusta)</option>
+<option value="liberica">リベリカ (Liberica)</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-primary/40 group-hover:text-primary transition-colors">expand_more</span>
+</div>
+</div>
+</section>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-12 gap-6">
+<!-- Composite Chart Area -->
+<div class="col-span-8 bg-surface-container-low rounded-xl p-8 overflow-hidden relative flex flex-col h-[500px]">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h2 class="text-2xl font-headline font-bold text-on-surface">統合市場予測</h2>
+<p class="text-xs text-on-surface-variant font-medium mt-1">6ヶ月間の価格 ($) vs 地域降水量指数</p>
+</div>
+<div class="flex gap-4">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<span class="text-[10px] uppercase tracking-widest font-bold">アラビカ価格 ($)</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-secondary-container"></span>
+<span class="text-[10px] uppercase tracking-widest font-bold">降水量指数</span>
+</div>
+</div>
+</div>
+<div class="flex-1 relative mt-4">
+<!-- Chart SVG Container -->
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 800 300">
+<!-- Background Grid Lines -->
+<line class="chart-grid-line" x1="0" x2="800" y1="50" y2="50"></line>
+<line class="chart-grid-line" x1="0" x2="800" y1="150" y2="150"></line>
+<line class="chart-grid-line" x1="0" x2="800" y1="250" y2="250"></line>
+<!-- Rainfall Histogram Bars (Background) -->
+<rect class="bar-rect" height="40" rx="4" width="80" x="40" y="220"></rect> <!-- Jun -->
+<rect class="bar-rect" height="80" rx="4" width="80" x="173" y="180"></rect> <!-- Jul -->
+<rect class="bar-rect" height="160" rx="4" style="fill: #4a6457; opacity: 0.9;" width="80" x="306" y="100"></rect> <!-- Aug (Peak) -->
+<rect class="bar-rect" height="110" rx="4" width="80" x="439" y="150"></rect> <!-- Sep -->
+<rect class="bar-rect" height="60" rx="4" width="80" x="572" y="200"></rect> <!-- Oct -->
+<rect class="bar-rect" height="30" rx="4" width="80" x="705" y="230"></rect> <!-- Nov -->
+<!-- Price Projection Smooth Curve (Foreground) -->
+<path class="line-path" d="M 80,200 C 146,186 146,160 213,160 C 280,160 280,80 346,80 C 412,80 412,110 479,110 C 546,110 546,180 612,180 C 679,180 679,190 745,190"></path>
+<!-- Markers -->
+<circle class="marker" cx="80" cy="200" r="5"></circle>
+<circle class="marker" cx="213" cy="160" r="5"></circle>
+<circle class="marker" cx="346" cy="80" r="6"></circle>
+<circle class="marker" cx="479" cy="110" r="5"></circle>
+<circle class="marker" cx="612" cy="180" r="5"></circle>
+<circle class="marker" cx="745" cy="190" r="5"></circle>
+</svg>
+<!-- Y-Axis Labels Price -->
+<div class="absolute left-0 top-0 bottom-0 flex flex-col justify-between py-1 text-[10px] font-bold text-primary pointer-events-none -ml-4">
+<span>$5.50</span>
+<span>$4.50</span>
+<span>$3.50</span>
+</div>
+<!-- Y-Axis Labels Rainfall (Right) -->
+<div class="absolute right-0 top-0 bottom-0 flex flex-col justify-between py-1 text-[10px] font-bold text-secondary pointer-events-none -mr-4 text-right">
+<span>100mm</span>
+<span>50mm</span>
+<span>0mm</span>
+</div>
+</div>
+<!-- X-Axis Labels -->
+<div class="flex justify-between items-center px-[8%] mt-6 border-t border-outline-variant/30 pt-4">
+<span class="text-[10px] font-bold uppercase tracking-tighter text-on-surface-variant">24年6月</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter text-on-surface-variant">24年7月</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter text-on-surface">24年8月</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter text-on-surface-variant">24年9月</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter text-on-surface-variant">24年10月</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter text-on-surface-variant">24年11月</span>
+</div>
+<!-- Peak Indicator Callout -->
+<div class="absolute top-[28%] left-[45%] -translate-x-1/2 bg-on-surface text-surface text-[10px] px-2 py-1 rounded-md font-bold shadow-xl">
+                        ピーク予測
+                    </div>
+</div>
+<!-- Key Insight Card -->
+<div class="col-span-4 bg-gradient-to-br from-primary to-primary-container rounded-xl p-8 text-on-primary flex flex-col justify-between">
+<div>
+<span class="material-symbols-outlined text-3xl mb-4" style="font-variation-settings: 'FILL' 1;">stars</span>
+<h3 class="text-xl font-headline italic">最高価格の要因</h3>
+<p class="text-on-primary-container text-sm mt-2 font-medium">8月のピーク（$5.12）は、ブラジルの栽培地域における最適な降水量の140%の急増と強く相関しています。</p>
+</div>
+<div class="mt-8">
+<div class="text-4xl font-headline font-bold">$5.12</div>
+<div class="text-[10px] uppercase tracking-widest font-bold opacity-70">2024年8月推定</div>
+</div>
+</div>
+<!-- Data Table Section -->
+<div class="col-span-12 bg-surface-container-high rounded-xl p-8">
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-lg font-headline font-bold">主要原産地のパフォーマンスと相関</h3>
+<button class="text-[10px] font-bold uppercase tracking-widest text-primary hover:underline">全分析を表示</button>
+</div>
+<div class="grid grid-cols-3 gap-8">
+<div class="flex items-center justify-between pb-3 border-b border-outline-variant/30">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">location_on</span>
+</div>
+<div>
+<div class="text-sm font-bold text-on-surface">ブラジル</div>
+<div class="text-[10px] text-on-surface-variant uppercase font-bold">ミナスジェライス</div>
+</div>
+</div>
+<div class="text-right">
+<div class="text-sm font-bold text-on-surface">+14.2%</div>
+<div class="text-[10px] text-secondary uppercase font-bold">高成長</div>
+</div>
+</div>
+<div class="flex items-center justify-between pb-3 border-b border-outline-variant/30">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">location_on</span>
+</div>
+<div>
+<div class="text-sm font-bold text-on-surface">コロンビア</div>
+<div class="text-[10px] text-on-surface-variant uppercase font-bold">ウイラ</div>
+</div>
+</div>
+<div class="text-right">
+<div class="text-sm font-bold text-on-surface">-2.1%</div>
+<div class="text-[10px] text-error uppercase font-bold">停滞</div>
+</div>
+</div>
+<div class="flex items-center justify-between pb-3 border-b border-outline-variant/30">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">location_on</span>
+</div>
+<div>
+<div class="text-sm font-bold text-on-surface">エチオピア</div>
+<div class="text-[10px] text-on-surface-variant uppercase font-bold">イルガチェフェ</div>
+</div>
+</div>
+<div class="text-right">
+<div class="text-sm font-bold text-on-surface">+8.4%</div>
+<div class="text-[10px] text-secondary uppercase font-bold">安定</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Contextual Insight (Bottom) -->
+<div class="mt-8 grid grid-cols-3 gap-6">
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/20 flex gap-4 items-center">
+<div class="bg-tertiary-container text-on-tertiary w-12 h-12 rounded-lg flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined">analytics</span>
+</div>
+<div>
+<div class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">信頼度</div>
+<div class="text-lg font-headline font-bold">精度 94%</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/20 flex gap-4 items-center">
+<div class="bg-secondary-container text-on-secondary-container w-12 h-12 rounded-lg flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined">update</span>
+</div>
+<div>
+<div class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">最終更新</div>
+<div class="text-lg font-headline font-bold">2時間14分前</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/20 flex gap-4 items-center">
+<div class="bg-primary-container text-on-primary-container w-12 h-12 rounded-lg flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined">eco</span>
+</div>
+<div>
+<div class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">環境指数</div>
+<div class="text-lg font-headline font-bold">中程度のリスク</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Footer -->
+<footer class="bg-[#fbfbe2] dark:bg-[#1b1d0e] border-t border-[#68513a]/10 dark:border-[#f5f5dc]/10 w-full py-12 px-8">
+<div class="flex flex-col md:flex-row justify-between items-center gap-4 w-full">
+<div class="text-[#4f3a25] dark:text-[#f5f5dc] Manrope text-xs tracking-widest uppercase">
+                © 2024 Arabica Analytics. エディトリアル・コモディティ・インテリジェンス
+            </div>
+<div class="flex gap-8">
+<a class="text-[#68513a]/60 Manrope text-xs tracking-widest uppercase hover:text-[#4f3a25] underline decoration-1 underline-offset-4 transition-colors" href="#">取引条件</a>
+<a class="text-[#68513a]/60 Manrope text-xs tracking-widest uppercase hover:text-[#4f3a25] underline decoration-1 underline-offset-4 transition-colors" href="#">プライバシーポリシー</a>
+<a class="text-[#68513a]/60 Manrope text-xs tracking-widest uppercase hover:text-[#4f3a25] underline decoration-1 underline-offset-4 transition-colors" href="#">メソドロジー</a>
+</div>
+</div>
+</footer>
+```</body></html>
