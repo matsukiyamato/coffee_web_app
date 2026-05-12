@@ -1,6 +1,6 @@
+# -*- coding: utf-8 -*-
 import streamlit as st
 import pandas as pd
-import yfinance as yf
 import pickle
 import requests
 from datetime import datetime, timedelta
@@ -10,10 +10,7 @@ import plotly.graph_objects as go
 st.set_page_config(page_title="Coffee Price Predictor", page_icon="☕", layout="wide")
 
 st.title("☕ コーヒー価格 AI予測ダッシュボード")
-st.markdown("""
-
-為替レート（USD/JPY）とブラジルの気象データ（サンパウロの気温・降水量）から、アラビカ種コーヒーの先物価格を予測します。
-""")
+st.markdown("為替レート（USD/JPY）とブラジルの気象データ（サンパウロの気温・降水量）から、アラビカ種コーヒーの先物価格を予測します。")
 
 # --- 2. モデルの読み込み ---
 @st.cache_resource
@@ -27,19 +24,16 @@ def load_model():
 
 model = load_model()
 
-# --- 3. データの取得 ---
-@st.cache_data(ttl=3600) # 1時間ごとにデータを更新
+# --- 3. データの取得（完全デモモード） ---
+@st.cache_data(ttl=3600)
 def get_latest_data():
     try:
-        # A. 市場データ (為替 & コーヒー)
-        market_data = yf.download(["JPY=X", "KC=F"], period="30d", interval="1d")
-        
-        # 欠損値(NaN)を除外して直近のデータを取得
-        jpy_series = market_data['Close']['JPY=X'].dropna()
-        coffee_series = market_data['Close']['KC=F'].dropna()
-        
-        latest_jpy = jpy_series.iloc[-1]
-        latest_coffee = coffee_series.iloc[-1]
+        # A. 市場データ (Yahoo!のエラーを回避するため、デモデータを強制使用)
+        st.warning("⚠️ 現在、Yahoo!ファイナンスの通信エラーを回避するため、市場データは一時的なデモデータを使用しています。")
+        latest_jpy = 150.50
+        latest_coffee = 2.15
+        dates = pd.date_range(end=datetime.today(), periods=30)
+        coffee_series = pd.Series([2.0 + i*0.01 for i in range(30)], index=dates)
         
         # B. 気象データ (ブラジル・サンパウロ)
         weather_url = "https://api.open-meteo.com/v1/forecast?latitude=-23.55&longitude=-46.63&daily=temperature_2m_mean,precipitation_sum&timezone=America%2FSao_Paulo"
@@ -47,8 +41,8 @@ def get_latest_data():
         
         temp_mean = weather_res['daily']['temperature_2m_mean'][0]
         precip_sum = weather_res['daily']['precipitation_sum'][0]
-        temp_lag3 = weather_res['daily']['temperature_2m_mean'][3] # 簡易的なラグ
-        precip_lag7 = weather_res['daily']['precipitation_sum'][6] # 簡易的なラグ
+        temp_lag3 = weather_res['daily']['temperature_2m_mean'][3] 
+        precip_lag7 = weather_res['daily']['precipitation_sum'][6] 
         
         return latest_jpy, latest_coffee, coffee_series, temp_mean, precip_sum, temp_lag3, precip_lag7
         
@@ -57,11 +51,10 @@ def get_latest_data():
         st.stop()
 
 # --- メイン処理 ---
-with st.spinner('最新の市場・気象データを取得し、AIが予測を計算しています...'):
+with st.spinner('最新のデータを読み込み中...'):
     jpy, coffee_now, history_series, temp, precip, temp3, precip7 = get_latest_data()
 
     # 特徴量: [Coffee_Price_Lag1, USD_JPY_Lag1, Temp_Mean, Precip_Sum, Temp_Lag3, Precip_Lag7]
-    # 本来は前日の値(Lag1)が必要ですが、リアルタイム性を持たせるため直近値を使用
     features = [[coffee_now, jpy, temp, precip, temp3, precip7]]
     
     # 予測の実行
@@ -96,26 +89,7 @@ fig.add_trace(go.Scatter(
     line=dict(color='SaddleBrown', width=3)
 ))
 
-
-import streamlit as st
-
-# --- (既存のコードの適当な場所に追加) ---
-
-st.header("💡 なぜこのAIは『天気』と『為替』を見ているの？")
-
-st.info('''
-**1. なぜ「為替（ドル/円）」のデータを使っているの？** コーヒー豆は、国際市場において「米ドル」で取引されています [cite: 2]。
-そのため、日本の輸入業者にとっては、コーヒー豆自体の価格が変わらなくても、「円安」が進むだけで仕入れコストが跳ね上がってしまいます [cite: 2]。AIには「今の円の価値」を教えることで、日本の経済状況に合ったリアルな価格変動を予測させています。
-
-**2. なぜ「ブラジルの天気」が関係あるの？** ブラジルは世界を代表するコーヒーの主要産地です [cite: 18]。
-現地で「異常な高温」が続いたり、雨が極端に降らなかったりすると、「今年はコーヒー豆が不作になるかも！」という不安から、価格が上昇する傾向があります [cite: 20]。AIは、現地の気温や降水量のデータから「数日後の市場の反応」を先読みしています [cite: 20]。
-
-**3. このアプリの強み** 単に過去の価格推移を見るだけでなく、「為替（経済の動き）」と「ブラジルの天気（供給側の状況）」という、現実社会の重要な要因を合体させています [cite: 27]。これにより、より実社会に即した「明日の価格予測」を実現しています。
-''')
-
-
-
-# 予測点（最後の実績点から線を引く）
+# 予測点
 last_date = history_series.index[-1]
 next_date = last_date + pd.Timedelta(days=1)
 
@@ -138,19 +112,14 @@ fig.update_layout(
 st.plotly_chart(fig, use_container_width=True)
 
 # --- 6. 解説セクション ---
-with st.expander("📝 予測モデルの解説（データソースとロジック）"):
-    st.write(f"""
-    - **ベースモデル**: 重回帰分析 (Linear Regression)
-    - **主要な入力データ (現在値)**:
-        - ブラジルの平均気温: **{temp}℃**
-        - ブラジルの降水量: **{precip}mm**
-    - **なぜこれらのデータが必要なのか？**:
-        コーヒーの国際価格は米ドル建てで決定されるため、日本の輸入業者にとって**為替（USD/JPY）**の影響は甚大です。また、世界最大の生産国である**ブラジルの気象状況（特に気温と降水量）**は、将来の供給量を示す先行指標となるため、モデルに組み込むことで予測精度（MAE）の向上を実現しています。
-    """)
+st.header("💡 なぜこのAIは『天気』と『為替』を見ているの？")
+st.info('''
+**1. なぜ「為替（ドル/円）」のデータを使っているの？** コーヒー豆は、国際市場において「米ドル」で取引されています。そのため、日本の輸入業者にとっては、コーヒー豆自体の価格が変わらなくても、「円安」が進むだけで仕入れコストが跳ね上がってしまいます。AIには「今の円の価値」を教えることで、日本の経済状況に合ったリアルな価格変動を予測させています。
 
-    import streamlit as st
+**2. なぜ「ブラジルの天気」が関係あるの？** ブラジルは世界を代表するコーヒーの主要産地です。現地で「異常な高温」が続いたり、雨が極端に降らなかったりすると、「今年はコーヒー豆が不作になるかも！」という不安から、価格が上昇する傾向があります。AIは、現地の気温や降水量のデータから「数日後の市場の反応」を先読みしています。
 
-# --- (既存のコードの適当な場所に追加) ---
+**3. このアプリの強み** 単に過去の価格推移を見るだけでなく、「為替（経済の動き）」と「ブラジルの天気（供給側の状況）」という、現実社会の重要な要因を合体させています。これにより、より実社会に即した「明日の価格予測」を実現しています。
+''')
 
 st.markdown("---")
 with st.expander("👨‍💻 開発の裏側：このアプリはどうやって作られた？（採用担当者様・一般の方向け）"):
