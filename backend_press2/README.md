@@ -1,39 +1,51 @@
-# backend_press2
-
 ## 現在までの処理
 
-フロント
- →
-選択
- →
-Flask受け取り
- →
-CSV保存
+画面1  
+↓  
+Flaskで受け取り  
+↓  
+CSV保存  
+↓  
+`exchange_rate.py` 呼び出し  
+↓  
+為替取得  
+↓  
+画面2に表示  
 
 ---
 
-## ファイル
+## ファイル構成
 
-backend_press2/country_bean.py
+- `backend_press2/country_bean.py`  
+  バックエンドメイン（Flask）
 
----
+- `exchange_rate_api/exchange_rate.py`  
+  為替取得処理
 
-## 受け取るデータ
+- `templates/index.html`  
+  仮の画面1（入力画面）
 
-### 変数名
-
-- 原産地名
-  - name属性: `country`
-
-- 豆の種類
-  - name属性: `bean`
+- `templates/result.html`  
+  仮の画面2（結果表示画面）
 
 ---
 
-## 処理内容
+## 変数名
 
-POSTで `/save` に送られてきたデータを受け取る
+### フォーム送信（POST）
 
-```python
-country = request.form["country"]
-bean = request.form["bean"]
+- 原産地名  
+  - `country`
+
+- 豆の種類  
+  - `bean`
+
+---
+
+### 画面2表示用（Flask → HTML）
+
+- 為替  
+  - `ex_rate`
+
+- 為替取得日時  
+  - `today_date`
