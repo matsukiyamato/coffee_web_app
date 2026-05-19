@@ -9,7 +9,7 @@ CSVファイルへ保存するプログラムです。
 
 ## 実行方法
 
-1. `.env` を開く
+1. `.env` を作成する
 
 2. `app.exchangerate-api.com` にて自分のAPIキーを取得する
 
