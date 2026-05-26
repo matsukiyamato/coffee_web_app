@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>結果画面</title>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+    <h1>為替レート</h1>
+
+    <p>取得日時: {{ today_date }}</p>
+    <p>為替: {{ ex_rate }}</p>
+
+    <hr>
+
+    <h2>降水量とコーヒー価格</h2>
+
+    <!-- グラフ表示 -->
+    <canvas id="myChart"></canvas>
+
+    <script>
+
+        const chartLabels = {{ labels | tojson }};
+
+        const chartRainData = {{ rain_data | tojson }};
+
+        const chartPriceData = {{ price_data | tojson }};
+
+        const ctx = document.getElementById('myChart');
+
+        new Chart(ctx, {
+
+            data: {
+
+                labels: chartLabels,
+
+                datasets: [
+
+                    // 折れ線
+                    {
+                        type: 'line',
+
+                        label: '降水量',
+
+                        data: chartRainData,
+
+                        yAxisID: 'y1'
+                    },
+
+                    // 棒グラフ
+                    {
+                        type: 'bar',
+
+                        label: 'コーヒー予想価格',
+
+                        data: chartPriceData,
+
+                        yAxisID: 'y2'
+                    }
+                ]
+            },
+
+            options: {
+
+                responsive: true,
+
+                scales: {
+
+                    y1: {
+                        type: 'linear',
+                        position: 'left'
+                    },
+
+                    y2: {
+                        type: 'linear',
+                        position: 'right'
+                    }
+                }
+            }
+        });
+
+    </script>
+
+</body>
+</html>
