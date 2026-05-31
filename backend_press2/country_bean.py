@@ -1,8 +1,25 @@
+import os
+import sys
+
+
+
+# 1. このファイル（country_bean.py）が置かれているフォルダ（backend_press2）の絶対パスを取得
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# 2. 1つ上のルートフォルダ（coffee_web_app）の絶対パスを取得
+ROOT_DIR = os.path.dirname(BASE_DIR)
+
+# 3. Pythonの検索ルートにルートフォルダを追加（これでインポートエラーが消えます）
+if ROOT_DIR not in sys.path:
+    sys.path.append(ROOT_DIR)
+# パスを追加した後に、他のモジュールを読み込む
 from flask import Flask, request, render_template
 from exchange_rate_api.exchange_rate import get_exchange_rate
 from datetime import datetime
 import csv
 import pandas as pd
+import pickle
+import requests
 
 
 app = Flask(
@@ -109,7 +126,9 @@ def save():
 
         #production_data = monthly_production.tolist()
 
-
+        labels = labels[-7:]
+        rain_data = rain_data[-7:]
+        price_data = price_data[-7:]
 
 
 

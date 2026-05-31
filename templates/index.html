@@ -1,15 +1,100 @@
-<form action="/save" method="post">
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Bean Predictor</title>
+    <style>
+        /* カラーパレット・基本スタイルはそのまま使用 */
+        :root {
+            --bg-color: #f5f0eb;
+            --text-color: #4a3b32;
+            --text-muted: #6f4e37;
+            --card-bg: #ffffff;
+            --card-shadow: rgba(0, 0, 0, 0.05);
+            --input-border: #d4c4b7;
+            --input-bg: #fdfbf9;
+            --btn-bg: #6f4e37;
+            --btn-hover: #5a3f2c;
+        }
 
-    <select name="country">
-        <option value="ブラジル">ブラジル</option>
-    </select>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
 
-    <select name="bean">
-        <option value="アラビカ">アラビカ</option>
-    </select>
+        .card {
+            background: var(--card-bg);
+            padding: 40px 60px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px var(--card-shadow);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
 
-    <button type="submit">
-        送信
-    </button>
+        h1 { margin-top: 0; margin-bottom: 10px; color: var(--btn-bg); letter-spacing: 2px; font-size: 2.2rem; }
+        p { margin-bottom: 40px; font-size: 1.1rem; line-height: 1.6; color: var(--text-muted); }
+        
+        .form-group { margin-bottom: 25px; text-align: left; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; color: var(--btn-hover); }
+        
+        select {
+            width: 100%; padding: 12px 15px; font-size: 1rem; border: 1px solid var(--input-border);
+            border-radius: 8px; background-color: var(--input-bg); color: var(--text-color);
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%236f4e37%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat; background-position: right 15px top 50%; background-size: 12px auto;
+            cursor: pointer; transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        select:focus { outline: none; border-color: var(--btn-bg); box-shadow: 0 0 5px rgba(111, 78, 55, 0.3); }
+        
+        .btn {
+            color: white; border: none; padding: 12px 30px; font-size: 1.1rem;
+            font-weight: bold; border-radius: 30px; cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s; width: 100%; margin-top: 10px;
+        }
+        .btn-primary { background-color: var(--btn-bg); }
+        .btn-primary:hover { background-color: var(--btn-hover); transform: translateY(-2px); }
+        .btn-primary:active { transform: translateY(0); }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Coffee Bean Predictor</h1>
+        <p>データから導き出す、最高の一杯。<br>AIがコーヒー豆の価格動向を予測します</p>
 
-</form>
+        <form action="/save" method="POST">
+            <div class="form-group">
+                <label for="origin">原産地</label>
+                <select name="country" id="origin">
+                    <option value="ブラジル">ブラジル</option>
+                    <option value="ベトナム">ベトナム (準備中)</option>
+                    <option value="コロンビア">コロンビア (準備中)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="beanType">豆の種類</label>
+                <select name="bean" id="beanType">
+                    <option value="アラビカ種">アラビカ種</option>
+                    <option value="ロブスタ種">ロブスタ種</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">予測を始める</button>
+        </form>
+    </div>
+</body>
+</html>
+
+
+
+
