@@ -1,91 +1,176 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
     <meta charset="UTF-8">
-    <title>結果画面</title>
-
-    <!-- Chart.js -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Data Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* カラーパレットはそのまま */
+        :root {
+            --bg-color: #f5f0eb; --text-color: #4a3b32; --text-muted: #6f4e37;
+            --sidebar-bg: #e8dfd8; --sidebar-border: #d4c4b7; --card-bg: #ffffff;
+            --card-shadow: rgba(0, 0, 0, 0.05); --nav-text: #6f4e37;
+            --nav-hover: #d4c4b7; --nav-active: #6f4e37; --nav-active-text: #ffffff;
+        }
 
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: var(--bg-color); color: var(--text-color); display: flex; height: 100vh; overflow: hidden; }
+        
+        .sidebar { width: 260px; background-color: var(--sidebar-bg); padding: 30px 20px; display: flex; flex-direction: column; border-right: 2px solid var(--sidebar-border); }
+        .sidebar h2 { color: var(--text-color); font-size: 1.5rem; margin-bottom: 40px; letter-spacing: 1px; text-align: center; }
+        
+        .nav-item { padding: 15px 20px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; transition: background-color 0.3s, color 0.3s; color: var(--nav-text); font-weight: bold; display: flex; align-items: center; }
+        .nav-item:hover { background-color: var(--nav-hover); }
+        .nav-item.active { background-color: var(--nav-active); color: var(--nav-active-text); }
+        
+        .back-link { margin-top: auto; text-align: center; color: var(--text-muted); text-decoration: none; font-size: 0.9rem; padding: 10px; border: 1px solid var(--text-muted); border-radius: 20px; transition: all 0.3s; }
+        .back-link:hover { background-color: var(--text-muted); color: var(--bg-color); }
+        
+        .main-content { flex: 1; padding: 40px; overflow-y: auto; display: flex; flex-direction: column; }
+        .header { margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .header h1 { font-size: 2rem; color: var(--text-color); }
+        .header p { color: var(--text-muted); margin-top: 5px; }
+        .status-box { background: var(--card-bg); padding: 10px 20px; border-radius: 8px; box-shadow: 0 2px 10px var(--card-shadow); font-size: 0.9rem;}
+        .status-box span { font-weight: bold; color: #eeb868; font-size: 1.2rem;}
+        
+        .chart-container { background-color: var(--card-bg); border-radius: 15px; padding: 20px; box-shadow: 0 4px 15px var(--card-shadow); height: 450px; width: 100%; max-width: 900px; position: relative; display: none; }
+        .chart-container.active { display: block; }
+        canvas { width: 100% !important; height: 100% !important; }
+    </style>
 </head>
-
 <body>
+    <nav class="sidebar">
+        <h2>Dashboard</h2>
+        <div class="nav-item active" data-target="priceChartContainer">
+            AI 価格予測推移
+        </div>
+        <div class="nav-item" data-target="climateChartContainer">
+            気候 × 価格相関
+        </div>
+        <a href="/" class="back-link">← 条件入力へ戻る</a>
+    </nav>
 
-    <h1>為替レート</h1>
+    <main class="main-content">
+        <div class="header">
+            <div>
+                <h1 id="pageTitle">コーヒー豆 AI価格予測推移</h1>
+                <p>直近の価格トレンドと、AIによる将来予測シミュレーション</p>
+            </div>
+            <div class="status-box">
+                現在為替: <span>¥{{ ex_rate }}</span> / USD<br>
+                <small>最終更新: {{ today_date }}</small>
+            </div>
+        </div>
 
-    <p>取得日時: {{ today_date }}</p>
-    <p>為替: {{ ex_rate }}</p>
+        <div id="priceChartContainer" class="chart-container active">
+            <canvas id="priceChart"></canvas>
+        </div>
 
-    <hr>
-
-    <h2>降水量とコーヒー価格</h2>
-
-    <!-- グラフ表示 -->
-    <canvas id="myChart"></canvas>
+        <div id="climateChartContainer" class="chart-container">
+            <canvas id="climateChart"></canvas>
+        </div>
+    </main>
 
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // サイドバーの切り替え
+            const navItems = document.querySelectorAll('.nav-item');
+            const chartContainers = document.querySelectorAll('.chart-container');
+            const pageTitle = document.getElementById('pageTitle');
 
-        const chartLabels = {{ labels | tojson }};
+            navItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    item.classList.add('active');
 
-        const chartRainData = {{ rain_data | tojson }};
+                    const targetId = item.getAttribute('data-target');
+                    chartContainers.forEach(container => { container.classList.remove('active'); });
+                    document.getElementById(targetId).classList.add('active');
 
-        const chartPriceData = {{ price_data | tojson }};
-
-        const ctx = document.getElementById('myChart');
-
-        new Chart(ctx, {
-
-            data: {
-
-                labels: chartLabels,
-
-                datasets: [
-
-                    // 折れ線
-                    {
-                        type: 'line',
-
-                        label: '降水量',
-
-                        data: chartRainData,
-
-                        yAxisID: 'y1'
-                    },
-
-                    // 棒グラフ
-                    {
-                        type: 'bar',
-
-                        label: 'コーヒー予想価格',
-
-                        data: chartPriceData,
-
-                        yAxisID: 'y2'
+                    if (targetId === 'priceChartContainer') {
+                        pageTitle.textContent = 'コーヒー豆 AI価格予測推移';
+                    } else if (targetId === 'climateChartContainer') {
+                        pageTitle.textContent = '気候（降水量）と価格の相関分析';
                     }
-                ]
-            },
+                });
+            });
 
-            options: {
+            Chart.defaults.color = '#6f4e37';
+            Chart.defaults.borderColor = '#e0d8d0';
 
-                responsive: true,
+            // Python (Flask) からデータを受け取る
+            const chartLabels = {{ labels | tojson | safe }};
+            const priceData = {{ price_data | tojson | safe }};
+            const rainData = {{ rain_data | tojson | safe }};
 
-                scales: {
+            // 最新月（予測月）の色だけ少し薄くするための設定
+            const barColors = priceData.map((_, index) => {
+                return index === priceData.length - 1 ? 'rgba(111, 78, 55, 0.4)' : 'rgba(111, 78, 55, 0.9)';
+            });
 
-                    y1: {
-                        type: 'linear',
-                        position: 'left'
-                    },
-
-                    y2: {
-                        type: 'linear',
-                        position: 'right'
+            // --- 1. 価格推移グラフ ---
+            const ctxPrice = document.getElementById('priceChart').getContext('2d');
+            new Chart(ctxPrice, {
+                type: 'bar',
+                data: {
+                    labels: chartLabels,
+                    datasets: [{
+                        label: 'コーヒー価格 (USD/lb) ※薄い色はAI予測',
+                        data: priceData,
+                        backgroundColor: barColors,
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: {
+                        y: { title: { display: true, text: '価格 (USD/lb)' } }
                     }
                 }
-            }
+            });
+
+            // --- 2. 気候 × 価格グラフ ---
+            const ctxClimate = document.getElementById('climateChart').getContext('2d');
+            new Chart(ctxClimate, {
+                type: 'bar',
+                data: {
+                    labels: chartLabels,
+                    datasets: [
+                        {
+                            label: 'コーヒー価格 (USD/lb)',
+                            data: priceData,
+                            backgroundColor: barColors,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: '月間降水量 (mm)',
+                            data: rainData,
+                            type: 'line',
+                            borderColor: '#4ca8cf',
+                            backgroundColor: '#4ca8cf',
+                            borderWidth: 3,
+                            tension: 0.3,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    scales: {
+                        y: {
+                            type: 'linear', display: true, position: 'left',
+                            title: { display: true, text: '価格 (USD/lb)' }
+                        },
+                        y1: {
+                            type: 'linear', display: true, position: 'right',
+                            title: { display: true, text: '月間降水量 (mm)' },
+                            grid: { drawOnChartArea: false }
+                        }
+                    }
+                }
+            });
         });
-
     </script>
-
 </body>
 </html>
